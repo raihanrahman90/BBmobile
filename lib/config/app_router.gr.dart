@@ -19,6 +19,7 @@ import 'package:bbmobile/features/profile/profile_screen.dart' as _i7;
 import 'package:bbmobile/features/register/register_screen.dart' as _i8;
 import 'package:bbmobile/features/splash/splash_screen.dart' as _i9;
 import 'package:bbmobile/features/transaction/transaction_screen.dart' as _i10;
+import 'package:flutter/material.dart' as _i12;
 
 /// generated route for
 /// [_i1.CartScreen]
@@ -41,10 +42,17 @@ class CartRoute extends _i11.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.DetailScreen]
-class DetailRoute extends _i11.PageRouteInfo<void> {
-  const DetailRoute({List<_i11.PageRouteInfo>? children})
-      : super(
+class DetailRoute extends _i11.PageRouteInfo<DetailRouteArgs> {
+  DetailRoute({
+    _i12.Key? key,
+    required String id,
+    List<_i11.PageRouteInfo>? children,
+  }) : super(
           DetailRoute.name,
+          args: DetailRouteArgs(
+            key: key,
+            id: id,
+          ),
           initialChildren: children,
         );
 
@@ -53,9 +61,29 @@ class DetailRoute extends _i11.PageRouteInfo<void> {
   static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
-      return const _i2.DetailScreen();
+      final args = data.argsAs<DetailRouteArgs>();
+      return _i2.DetailScreen(
+        key: args.key,
+        id: args.id,
+      );
     },
   );
+}
+
+class DetailRouteArgs {
+  const DetailRouteArgs({
+    this.key,
+    required this.id,
+  });
+
+  final _i12.Key? key;
+
+  final String id;
+
+  @override
+  String toString() {
+    return 'DetailRouteArgs{key: $key, id: $id}';
+  }
 }
 
 /// generated route for

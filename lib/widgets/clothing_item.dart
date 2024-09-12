@@ -1,9 +1,16 @@
+import 'package:bbmobile/features/home/data/product.dart';
+import 'package:bbmobile/utils/formatter.dart';
 import 'package:flutter/material.dart';
 
 class ClothingItem extends StatelessWidget {
+  final ProductData data;
   final VoidCallback onPressedItem;
 
-  const ClothingItem({super.key, required this.onPressedItem});
+  const ClothingItem({
+    super.key,
+    required this.onPressedItem,
+    required this.data,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +30,7 @@ class ClothingItem extends StatelessWidget {
         child: Row(
           children: [
             Image.network(
-              "https://via.placeholder.com/55x55",
+              data.image ?? "https://via.placeholder.com/55x55",
               height: 70,
               width: 70,
               fit: BoxFit.fill,
@@ -35,9 +42,9 @@ class ClothingItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Stigma Socialitas',
-                      style: TextStyle(
+                    Text(
+                      data.name ?? '-',
+                      style: const TextStyle(
                         color: Color(0xFF222222),
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -45,7 +52,9 @@ class ClothingItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'RP. 40.000',
+                      Formatter.currencyFormat(
+                        data.price.toString(),
+                      ),
                       style: TextStyle(
                         color: const Color(0xFF222222).withOpacity(0.6),
                         fontSize: 10,
