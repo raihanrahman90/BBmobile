@@ -6,10 +6,12 @@ import '../cubits/counter_qty_cubit.dart';
 
 class CounterQty extends StatefulWidget {
   final Function(int) onQtyChanged;
+  final int initialQty;
 
   const CounterQty({
     super.key,
     required this.onQtyChanged,
+    this.initialQty = 1,
   });
 
   @override
@@ -36,7 +38,10 @@ class _CounterQtyState extends State<CounterQty> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CounterQtyCubit(),
+      create: (context) => CounterQtyCubit()
+        ..initialQty(
+          qty: widget.initialQty,
+        ),
       child: BlocConsumer<CounterQtyCubit, CounterQtyState>(
         listener: (context, state) {
           state.when(

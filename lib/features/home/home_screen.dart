@@ -19,9 +19,6 @@ class HomeScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => CountCartCubit()..countCart(),
-        ),
-        BlocProvider(
           create: (context) => ProductCubit()
             ..getProduct(
               query: ProductQuery(),
@@ -55,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                       offset: const Offset(5, -5),
                       child: const Icon(Icons.shopping_cart),
                     ),
-                    orElse: () => const Badge(isLabelVisible: false),
+                    orElse: () => const Icon(Icons.shopping_cart),
                   ),
                 ),
               ],

@@ -6,9 +6,9 @@ import '../../../config/dio_config.dart';
 import '../../../utils/api_helper.dart';
 import 'cart_cubit.dart';
 
-part 'cart_delete_state.dart';
-
 part 'cart_delete_cubit.freezed.dart';
+
+part 'cart_delete_state.dart';
 
 class CartDeleteCubit extends Cubit<CartDeleteState> {
   final dio = myDio;
@@ -26,9 +26,8 @@ class CartDeleteCubit extends Cubit<CartDeleteState> {
     );
 
     if (cartResponse.status == ApiCallStatus.success) {
-      _cartCubit.getCart();
-
       emit(const CartDeleteState.success());
+      _cartCubit.getCart();
     } else {
       emit(
         CartDeleteState.failed(

@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bbmobile/features/cart/cubits/cart_cubit.dart';
 import 'package:bbmobile/features/detail_item/cubits/cart_post_cubit.dart';
 import 'package:bbmobile/features/detail_item/cubits/product_detail_cubit.dart';
+import 'package:bbmobile/features/home/cubits/count_cart_cubit.dart';
 import 'package:bbmobile/utils/formatter.dart';
 import 'package:bbmobile/widgets/try_again.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +27,9 @@ class DetailScreen extends StatelessWidget {
             ),
         ),
         BlocProvider(
-          create: (context) => CartPostCubit(),
+          create: (context) => CartPostCubit(
+            context.read<CountCartCubit>(),
+          ),
         ),
       ],
       child: BlocListener<CartPostCubit, CartPostState>(
@@ -170,7 +174,9 @@ class DetailScreen extends StatelessWidget {
                           orElse: () {
                             return ElevatedButton(
                               onPressed: () {
-                                context.read<CartPostCubit>().createCart(id: id);
+                                context
+                                    .read<CartPostCubit>()
+                                    .createCart(id: id);
                               },
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
@@ -180,7 +186,8 @@ class DetailScreen extends StatelessWidget {
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.shopping_cart, color: Colors.white),
+                                  Icon(Icons.shopping_cart,
+                                      color: Colors.white),
                                   SizedBox(width: 10),
                                   Text(
                                     'Masukkan Keranjang',
