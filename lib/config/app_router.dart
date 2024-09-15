@@ -27,11 +27,10 @@ class AppRouter extends RootStackRouter {
                 AutoRoute(page: ProfileRoute.page),
               ],
             ),
-
             AutoRoute(page: CartRoute.page),
             AutoRoute(page: DetailRoute.page),
             AutoRoute(page: PayRoute.page),
-
+            AutoRoute(page: TransactionDetailRoute.page),
             RedirectRoute(path: '*', redirectTo: ''),
           ],
         ),

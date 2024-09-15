@@ -1,10 +1,18 @@
+import 'package:bbmobile/utils/formatter.dart';
 import 'package:bbmobile/widgets/transaction_status.dart';
 import 'package:flutter/material.dart';
 
+import '../features/transaction/data/transaction.dart';
+
 class TransactionItem extends StatelessWidget {
+  final TransactionData data;
   final VoidCallback onPressedItem;
 
-  const TransactionItem({super.key, required this.onPressedItem});
+  const TransactionItem({
+    super.key,
+    required this.onPressedItem,
+    required this.data,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +33,7 @@ class TransactionItem extends StatelessWidget {
         child: Row(
           children: [
             Image.network(
-              "https://via.placeholder.com/55x55",
+              data.itemImage ?? "https://via.placeholder.com/55x55",
               height: 70,
               width: 70,
               fit: BoxFit.fill,
@@ -35,9 +43,9 @@ class TransactionItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'TITLE',
-                    style: TextStyle(
+                  Text(
+                    data.itemName ?? '-',
+                    style: const TextStyle(
                       color: Color(0xFF222222),
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -45,7 +53,9 @@ class TransactionItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'RP. 40000',
+                    Formatter.currencyFormat(
+                      data.total.toString(),
+                    ),
                     style: TextStyle(
                       color: const Color(0xFF222222).withOpacity(0.6),
                       fontSize: 10,
@@ -53,7 +63,7 @@ class TransactionItem extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const TransactionStatus(status: true),
+                  TransactionStatus(status: data.status ?? '-'),
                 ],
               ),
             )

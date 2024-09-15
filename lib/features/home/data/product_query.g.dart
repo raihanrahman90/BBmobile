@@ -13,10 +13,18 @@ ProductQuery _$ProductQueryFromJson(Map<String, dynamic> json) => ProductQuery(
       maxPrice: (json['maxPrice'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$ProductQueryToJson(ProductQuery instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'category': instance.category,
-      'minPrice': instance.minPrice,
-      'maxPrice': instance.maxPrice,
-    };
+Map<String, dynamic> _$ProductQueryToJson(ProductQuery instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('name', instance.name);
+  writeNotNull('category', instance.category);
+  writeNotNull('minPrice', instance.minPrice);
+  writeNotNull('maxPrice', instance.maxPrice);
+  return val;
+}
