@@ -63,7 +63,7 @@ class DetailScreen extends StatelessWidget {
                   ),
                 ),
                 elevation: 0,
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.red,
               ),
               extendBodyBehindAppBar: true,
               body: state.maybeWhen(
@@ -82,6 +82,7 @@ class DetailScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(height: 100,),
                         Image.network(
                           data.image ?? "https://via.placeholder.com/600x400",
                           height: 300,

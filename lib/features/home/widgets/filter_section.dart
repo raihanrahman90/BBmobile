@@ -16,6 +16,7 @@ class _FilterSectionState extends State<FilterSection> {
   final _query = TextEditingController();
   final _min = TextEditingController();
   final _max = TextEditingController();
+  String _category = '';
 
   @override
   void initState() {
@@ -26,6 +27,7 @@ class _FilterSectionState extends State<FilterSection> {
       _query.text = filter.name ?? '';
       _min.text = filter.minPrice != null ? filter.minPrice.toString() : '';
       _max.text = filter.maxPrice != null ? filter.maxPrice.toString() : '';
+      _category = filter.category != null ? filter.category.toString() : '';
     }
   }
 
@@ -102,6 +104,7 @@ class _FilterSectionState extends State<FilterSection> {
                   name: _query.text.trim(),
                   maxPrice: _max.text.isNotEmpty ? int.parse(_max.text) : null,
                   minPrice: _min.text.isNotEmpty ? int.parse(_min.text) : null,
+                  category: _category
                 ),
               );
               context.router.maybePop();

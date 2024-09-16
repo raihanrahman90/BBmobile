@@ -4,6 +4,7 @@ import 'package:bbmobile/features/home/cubits/count_cart_cubit.dart';
 import 'package:bbmobile/features/home/cubits/product_cubit.dart';
 import 'package:bbmobile/features/home/data/product.dart';
 import 'package:bbmobile/features/home/data/product_query.dart';
+import 'package:bbmobile/features/home/widgets/filter_category.dart';
 import 'package:bbmobile/features/home/widgets/filter_section.dart';
 import 'package:bbmobile/widgets/clothing_item.dart';
 import 'package:bbmobile/widgets/try_again.dart';
@@ -67,11 +68,22 @@ class HomeScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          FilterCategory(
+                            filter:
+                            context.read<ProductCubit>().query,
+                            onSearch: (productQuery) {
+                              context
+                                  .read<ProductCubit>()
+                                  .changedProductFilter(
+                                productQuery,
+                              );
+                            },
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                'Best Seller',
+                                'Items',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
