@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final myDio = Dio()
   ..options.baseUrl = Environment.baseUrl
+  ..options.connectTimeout = const Duration(minutes: 1)
+  ..options.receiveTimeout = const Duration(minutes: 1)
   ..interceptors.add(DioInterceptor());
 
 class DioInterceptor extends Interceptor {
@@ -29,7 +31,9 @@ class DioInterceptor extends Interceptor {
         final response = await _refreshToken();
         if (response.statusCode == 200) {
           // Token refresh successful
-          final newAccessToken = response.data['access_token'];
+          final newAccessToken = response.data['data']['token'];
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('token', newAccessToken);
 
           // Update the original request with the new token
           err.requestOptions.headers['Authorization'] =
@@ -61,7 +65,7 @@ class DioInterceptor extends Interceptor {
     final prefs = await SharedPreferences.getInstance();
     final refreshToken = prefs.getString('refreshToken');
 
-    return await dio.post(
+    return await dio.get(
       '/auth/refresh',
       queryParameters: {
         'refreshToken': refreshToken,

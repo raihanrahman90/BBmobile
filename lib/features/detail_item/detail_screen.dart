@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:bbmobile/features/cart/cubits/cart_cubit.dart';
 import 'package:bbmobile/features/detail_item/cubits/cart_post_cubit.dart';
 import 'package:bbmobile/features/detail_item/cubits/product_detail_cubit.dart';
 import 'package:bbmobile/features/home/cubits/count_cart_cubit.dart';

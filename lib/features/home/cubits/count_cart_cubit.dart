@@ -14,6 +14,10 @@ class CountCartCubit extends Cubit<CountCartState> {
 
   CountCartCubit() : super(const CountCartState.initial());
 
+  void resetCart() {
+    emit(const CountCartState.initial());
+  }
+
   void countCart() async {
     final countCartResponse = await makeApiCall<CountCart>(
       dio: dio,

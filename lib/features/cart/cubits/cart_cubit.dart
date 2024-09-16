@@ -1,4 +1,5 @@
 import 'package:bbmobile/config/dio_config.dart';
+import 'package:bbmobile/features/cart/cubits/transaction_post_cubit.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -11,8 +12,11 @@ part 'cart_state.dart';
 
 class CartCubit extends Cubit<CartState> {
   final dio = myDio;
+  final TransactionPostCubit _transactionPostCubit;
 
-  CartCubit() : super(const CartState.initial());
+  CartCubit(
+    this._transactionPostCubit,
+  ) : super(const CartState.initial());
 
   void getCart() async {
     emit(const CartState.loading());
@@ -31,6 +35,9 @@ class CartCubit extends Cubit<CartState> {
           ),
         );
       } else {
+        for (var cart in cartResponse.data!.data!) {
+          _transactionPostCubit.cartItem[cart.itemId!] = 1;
+        }
         emit(
           CartState.success(
             data: cartResponse.data!.data!,

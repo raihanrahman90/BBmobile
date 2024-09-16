@@ -4,60 +4,53 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../cubits/counter_qty_cubit.dart';
 
-class CounterQty extends StatefulWidget {
+class CounterQty extends StatelessWidget {
   final Function(int) onQtyChanged;
   final int initialQty;
+  final bool isTransactionDetail;
 
   const CounterQty({
     super.key,
     required this.onQtyChanged,
     this.initialQty = 1,
+    this.isTransactionDetail = false,
   });
-
-  @override
-  State<CounterQty> createState() => _CounterQtyState();
-}
-
-class _CounterQtyState extends State<CounterQty> {
-  final _qty = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-
-    _qty.text = '0';
-  }
-
-  @override
-  void dispose() {
-    _qty.dispose;
-
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CounterQtyCubit()
         ..initialQty(
-          qty: widget.initialQty,
+          qty: initialQty,
         ),
       child: BlocConsumer<CounterQtyCubit, CounterQtyState>(
         listener: (context, state) {
           state.when(
             qty: (qty) {
-              widget.onQtyChanged(qty);
-              _qty.text = qty.toString();
+              onQtyChanged(qty);
             },
           );
         },
         builder: (context, state) {
+          if (isTransactionDetail) {
+            return state.when(
+              qty: (qty) => Text(
+                'x $qty',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontFamily: FontFamily.poppins,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            );
+          }
+
           return Row(
             children: [
               IconButton(
                 onPressed: () {
                   context.read<CounterQtyCubit>().minQty(
-                        qty: int.parse(_qty.text),
+                        qty: context.read<CounterQtyCubit>().qtyValue,
                       );
                 },
                 icon: const Icon(
@@ -79,7 +72,7 @@ class _CounterQtyState extends State<CounterQty> {
               IconButton(
                 onPressed: () {
                   context.read<CounterQtyCubit>().addQty(
-                        qty: int.parse(_qty.text),
+                        qty: context.read<CounterQtyCubit>().qtyValue,
                       );
                 },
                 icon: const Icon(
