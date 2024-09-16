@@ -1,127 +1,206 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:bbmobile/features/detail_item/cubits/cart_post_cubit.dart';
+import 'package:bbmobile/features/detail_item/cubits/product_detail_cubit.dart';
+import 'package:bbmobile/utils/formatter.dart';
+import 'package:bbmobile/widgets/try_again.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../utils/snackbar_custom.dart';
 
 @RoutePage()
 class DetailScreen extends StatelessWidget {
-  const DetailScreen({super.key});
+  final String id;
+
+  const DetailScreen({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () {
-            context.router.maybePop();
-          },
-          icon: const Icon(
-            Icons.chevron_left,
-            color: Colors.black,
-          ),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
-      extendBodyBehindAppBar: true,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.network(
-              "https://via.placeholder.com/600x400",
-              height: 300,
-              width: double.infinity,
-              fit: BoxFit.fill,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ProductDetailCubit()
+            ..getProductDetail(
+              id: id,
             ),
-            const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.0,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'TITLE BAJU INI',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+        ),
+        BlocProvider(
+          create: (context) => CartPostCubit(),
+        ),
+      ],
+      child: BlocListener<CartPostCubit, CartPostState>(
+        listener: (context, state) {
+          state.whenOrNull(
+            success: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackbarCustom(
+                  message: 'Berhasil Menambahkan Produk Kedalam Keranjang',
+                ),
+              );
+            },
+            failed: (message) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackbarCustom(message: message),
+              );
+            },
+          );
+        },
+        child: BlocBuilder<ProductDetailCubit, ProductDetailState>(
+          builder: (context, state) {
+            return Scaffold(
+              appBar: AppBar(
+                automaticallyImplyLeading: false,
+                leading: IconButton(
+                  onPressed: () {
+                    context.router.maybePop();
+                  },
+                  icon: const Icon(
+                    Icons.chevron_left,
+                    color: Colors.black,
                   ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                      Text(
-                        '4.5',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.amber,
+                ),
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+              ),
+              extendBodyBehindAppBar: true,
+              body: state.maybeWhen(
+                failed: (message) => Center(
+                  child: TryAgain(
+                    message: message,
+                    onTryAgain: () {
+                      context.read<ProductDetailCubit>().getProductDetail(
+                            id: id,
+                          );
+                    },
+                  ),
+                ),
+                success: (data) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Image.network(
+                          data.image ?? "https://via.placeholder.com/600x400",
+                          height: 300,
+                          width: double.infinity,
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 20.0,
-                horizontal: 16,
-              ),
-              child: Text(
-                'Rp. 250.000',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.red,
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  data.name ?? '-',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  Text(
+                                    data.rating.toString(),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.amber,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 20.0,
+                            horizontal: 16,
+                          ),
+                          child: Text(
+                            Formatter.currencyFormat(
+                              data.price.toString(),
+                            ),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                          ),
+                          child: Text(
+                            data.description ?? '-',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              height: 1.5,
+                              color: Colors.blueGrey,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                orElse: () => const Center(
+                  child: CircularProgressIndicator(),
                 ),
               ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.0,
+              bottomNavigationBar: BlocBuilder<CartPostCubit, CartPostState>(
+                builder: (context, state) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        state.maybeWhen(
+                          loading: () => const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          orElse: () {
+                            return ElevatedButton(
+                              onPressed: () {
+                                context.read<CartPostCubit>().createCart(id: id);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.shopping_cart, color: Colors.white),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    'Masukkan Keranjang',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
-              child: Text(
-                'Sit consectetur anim, lorem rebum ad nulla assum takimata eleifend liber zzril deserunt officia incidunt facer no nobis non aliqua nihil elitr consequat. Sunt minim feugiat laoreet sunt, elitr assum eros proident magna gubergren adipiscing nam gubergren, elitr excepteur non obcaecat eiusmod voluptua hendrerit elit laoreet aute. Augue consequat est facilisi non erat. Exerci accusam diam reprehenderit liber lorem sed clita sint elit. Doming blandit sed. Assum facilisis nulla.',
-                style: TextStyle(
-                  fontSize: 12,
-                  height: 1.5,
-                  color: Colors.blueGrey,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-        child: ElevatedButton(
-          onPressed: () {
+            );
           },
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(
-              vertical: 16,
-            ),
-          ),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.shopping_cart, color: Colors.white),
-              SizedBox(width: 10),
-              Text(
-                'Masukkan Keranjang',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );

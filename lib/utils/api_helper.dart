@@ -15,6 +15,7 @@ Future<ApiResponse<T>> makeApiCall<T>({
   required String endpoint,
   required String method,
   Map<String, dynamic>? data,
+  Map<String, dynamic>? query,
   T Function(Map<String, dynamic>)? fromJson,
   Options? option,
 }) async {
@@ -22,7 +23,10 @@ Future<ApiResponse<T>> makeApiCall<T>({
     Response response;
     switch (method.toLowerCase()) {
       case 'get':
-        response = await dio.get(endpoint);
+        response = await dio.get(
+          endpoint,
+          queryParameters: query,
+        );
         break;
       case 'post':
         response = await dio.post(
