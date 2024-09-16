@@ -1,4 +1,5 @@
 import 'package:bbmobile/config/dio_config.dart';
+import 'package:bbmobile/features/home/cubits/count_cart_cubit.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -11,8 +12,9 @@ part 'cart_post_state.dart';
 
 class CartPostCubit extends Cubit<CartPostState> {
   final dio = myDio;
+  final CountCartCubit _cartCountCubit;
 
-  CartPostCubit() : super(const CartPostState.initial());
+  CartPostCubit(this._cartCountCubit) : super(const CartPostState.initial());
 
   void createCart({
     required String id,
@@ -27,6 +29,8 @@ class CartPostCubit extends Cubit<CartPostState> {
     );
 
     if (productDetailResponse.status == ApiCallStatus.success) {
+      _cartCountCubit.countCart();
+
       emit(const CartPostState.success());
     } else {
       emit(

@@ -14,19 +14,27 @@ class AppRouter extends RootStackRouter {
 
         // Main
         AutoRoute(
-          page: MainRoute.page,
+          page: RootRoute.page,
+          initial: true,
           guards: [AuthGuard()],
           children: [
-            AutoRoute(page: HomeRoute.page),
-            AutoRoute(page: TransactionRoute.page),
-            AutoRoute(page: ProfileRoute.page),
-          ],
-          initial: true,
-        ),
+            AutoRoute(
+              path: '',
+              page: MainRoute.page,
+              children: [
+                AutoRoute(page: HomeRoute.page),
+                AutoRoute(page: TransactionRoute.page),
+                AutoRoute(page: ProfileRoute.page),
+              ],
+            ),
 
-        AutoRoute(page: CartRoute.page),
-        AutoRoute(page: DetailRoute.page),
-        AutoRoute(page: PayRoute.page),
+            AutoRoute(page: CartRoute.page),
+            AutoRoute(page: DetailRoute.page),
+            AutoRoute(page: PayRoute.page),
+
+            RedirectRoute(path: '*', redirectTo: ''),
+          ],
+        ),
       ];
 }
 

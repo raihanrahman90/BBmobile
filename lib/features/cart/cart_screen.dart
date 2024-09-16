@@ -40,6 +40,8 @@ class CartScreen extends StatelessWidget {
                   message: 'Berhasil Menghapus Barang dari Keranjang',
                 ),
               );
+
+              context.read<CartCubit>().getCart();
             },
           );
         },
@@ -79,57 +81,17 @@ class CartScreen extends StatelessWidget {
                       return CartItem(
                         onDelete: BlocBuilder<CartDeleteCubit, CartDeleteState>(
                           builder: (context, state) {
-                            return state.maybeWhen(
-                              loading: () => const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(),
-                              ),
-                              orElse: () {
-                                return IconButton(
-                                  onPressed: () => showDialog(
-                                    context: context,
-                                    builder: (_) {
-                                      return AlertDialog(
-                                        title: Text(
-                                          'Hapus ${result.itemName}?',
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        content: const Text(
-                                          'Apakah Anda yakin ingin menghapus ini? Tindakan ini tidak dapat dibatalkan.',
-                                          style: TextStyle(
-                                            fontSize: 10,
-                                          ),
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            child: const Text('Batal'),
-                                            onPressed: () =>
-                                                context.router.maybePop(),
-                                          ),
-                                          ElevatedButton(
-                                            child: const Text('Hapus'),
-                                            onPressed: () {
-                                              context
-                                                  .read<CartDeleteCubit>()
-                                                  .deleteCart(
-                                                    id: result.itemId ?? '',
-                                                  );
-                                              context.router.maybePop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                  icon: const Icon(
-                                    Icons.delete_outline_rounded,
-                                  ),
+                            return IconButton(
+                              onPressed: () {
+                                context
+                                    .read<CartDeleteCubit>()
+                                    .deleteCart(
+                                  id: result.itemId ?? '',
                                 );
                               },
+                              icon: const Icon(
+                                Icons.delete_outline_rounded,
+                              ),
                             );
                           },
                         ),
@@ -150,25 +112,6 @@ class CartScreen extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Total',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        Text(
-                          'Rp. 150.000',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 14),
                     ElevatedButton(
                       onPressed: () {
                         context.router.push(const PayRoute());

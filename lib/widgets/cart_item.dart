@@ -38,7 +38,7 @@ class CartItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   Text(
+                  Text(
                     data.itemName ?? '',
                     style: const TextStyle(
                       color: Color(0xFF222222),
